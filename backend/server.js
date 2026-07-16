@@ -26,13 +26,13 @@ const tasks=[{
   priority: 'low'
 }];
 
-app.get('/api/gwtAllTask', (req, res) => {
+app.get('/api/tasks', (req, res) => {
     res.status(200).json(tasks);
 });
 
 const isValidPriority = (p) => ['low', 'medium', 'high'].includes(p);
 
-app.post('/api/addTask', (req, res) => {
+app.post('/api/tasks', (req, res) => {
     const { title, description, priority } = req.body;
 
     if (!title ||title.trim() === '') {
@@ -58,7 +58,7 @@ app.post('/api/addTask', (req, res) => {
     res.status(201).json(newTask);
 });
 
-app.put('/api/updateTask/:id', (req, res) => {
+app.put('/api/tasks/:id', (req, res) => {
     const taskId = parseInt(req.params.id);
     const { title, description, completed, priority } = req.body;
 
@@ -88,7 +88,7 @@ app.put('/api/updateTask/:id', (req, res) => {
     res.status(200).json(tasks[taskIndex]);
 });
 
-app.delete('/api/deleteTask/:id', (req, res) => {
+app.delete('/api/tasks/:id', (req, res) => {
     const taskId = parseInt(req.params.id);
     const taskIndex = tasks.findIndex(t => t.id === taskId);
 
@@ -100,7 +100,7 @@ app.delete('/api/deleteTask/:id', (req, res) => {
     res.status(204).json({ message: `Task ${taskId} deleted successfully.` });
 });
 
-app.patch('/api/toggleTask/:id', (req, res) => {
+app.patch('/api/tasks/:id/toggle', (req, res) => {
     const taskId = parseInt(req.params.id);
     const task = tasks.find(t => t.id === taskId);
 

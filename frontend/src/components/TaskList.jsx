@@ -10,10 +10,17 @@ const TaskList = ({onToggle, onDelete, onEdit }) => {
             .then(response => response.json())
             .then(data => setTasks(data));
     }, []);
-    if (tasks.length === 0) {
-        return <div className="no-tasks">No tasks to display</div>;
-    }
-    
+ 
+    useEffect(() => {
+    if (tasks.length === 0) return;
+
+    const interval = setInterval(() => {
+      next();
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [currentIndex, tasks]);
+
     const next = () => {
         if (currentIndex === tasks.length - 1) {
         setCurrentIndex(0);
@@ -28,16 +35,38 @@ const TaskList = ({onToggle, onDelete, onEdit }) => {
         setCurrentIndex(currentIndex-1);
         }
     };
-    
-useEffect(() => {
-    if (tasks.length === 0) return;
+  const Delete = (id) => {
+    const confirmDelete = window.confirm('Are you sure you want to delete this task?');
+    if (confirmDelete) {
+      fetch(`http://localhost:4000/api/tasks/${id}`, {
+        method: 'DELETE',
+      })
+        .then(() => {
+          const updatedTasks = tasks.filter((t) => t.id !== id);
+          setTasks(updatedTasks);
+          if (currentIndex >= updatedTasks.length && updatedTasks.length > 0) {
+            setCurrentIndex(updatedTasks.length - 1);
+          }
+        })
+        .catch((err) => console.error(err));
+    }
+  };
 
-    const interval = setInterval(() => {
-      next();
-    }, 2000);
+  const Toggle = (id) => {
+    fetch(`http://localhost:4000/api/tasks/${id}/toggle`, {
+      method: 'PATCH',
+    })
+      .then((res) => res.json())
+      .then((updatedTask) => {
+        const updatedTasks = tasks.map((t) => (t.id === id ? updatedTask : t));
+        setTasks(updatedTasks);
+      })
+      .catch((err) => console.error(err));
+  };
 
-    return () => clearInterval(interval);
-  }, [currentIndex, tasks]);
+   if (tasks.length === 0) {
+        return <div className="no-tasks">No tasks to display</div>;
+    }
 
  return (
     <div>
@@ -47,17 +76,16 @@ useEffect(() => {
         <div 
           style={{ 
             display: 'flex', 
-            transform: `translateX(-${currentIndex * 100}%)`, 
-            // transition: 'transform 0.5s ease' 
+            transform: `translateX(-${currentIndex * 100}%)`
           }}
         >
           {tasks.map((task) => (
             <div className="task-item" key={task.id} style={{ minWidth: '100%', boxSizing: 'border-box', textAlign: 'center' }}>
               <h3>{task.id}</h3>
               <p>{task.description}</p>
-              <button onClick={() => onToggle(task.id)}>Toggle</button>
+              <button onClick={() => Toggle(task.id)}>Toggle</button>
               <button onClick={() => onEdit(task.id)}>Edit</button>
-              <button onClick={() => onDelete(task.id)}>Delete</button>
+              <button onClick={() => Delete(task.id)}>Delete</button>
             </div>
           ))}
         </div>

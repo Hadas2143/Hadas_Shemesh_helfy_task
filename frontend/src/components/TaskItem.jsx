@@ -1,6 +1,4 @@
-import React, { useState,useEffect } from 'react';
-// import TaskItem from './TaskItem';
-import '../App.css';
+
 
 const TaskItem = ({ task, onToggle, onDelete, onEdit }) => {
   return (
