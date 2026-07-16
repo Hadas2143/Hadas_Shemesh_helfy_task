@@ -13,13 +13,22 @@
 - PUT /api/tasks/:id
 - DELETE /api/tasks/:id
 - PATCH /api/tasks/:id/toggle
+
 4.Time planning:
+
 Opening repositories, infrastructure for REACT and NODEJS - 15 minutes
 Server-side building - 70 minutes
+
 Client-side building - 120 minutes
+
 Design - 10 minutes
+
 5.Design decisions made:
+
+
 A small change to the original CSS
+
 In button highlights and base colors
+
 
 I really enjoyed developing the product
